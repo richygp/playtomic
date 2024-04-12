@@ -9,11 +9,16 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service("walletService")
 public class WalletServiceImpl implements IWalletService {
 
     private final IWalletRepository walletRepository;
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final Lock readLock = rwLock.readLock();
+    private final Lock writeLock = rwLock.writeLock();
 
     public WalletServiceImpl(IWalletRepository walletRepository) {
         this.walletRepository = walletRepository;
@@ -26,7 +31,12 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     public void createEmptyWallet() {
-        walletRepository.save(new Wallet());
+        writeLock.lock();
+        try {
+            walletRepository.save(new Wallet());
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
@@ -40,15 +50,23 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     public BigDecimal getWalletBalance(UUID walletId) {
-        // TODO: Also think it could be a running top-up transaction on this walletId
-        return getWalletById(walletId).getBalance();
+        readLock.lock();
+        try {
+            return getWalletById(walletId).getBalance();
+        } finally {
+            readLock.unlock();
+        }
     }
 
     @Override
     public void topUpWallet(UUID walletId, String creditCardNumber, BigDecimal amount) {
-        // TODO: Need to be thread safe ;)
         Wallet wallet = getWalletById(walletId);
-        wallet.setBalance(wallet.getBalance().add(amount));
-        walletRepository.save(wallet);
+        writeLock.lock();
+        try {
+            wallet.setBalance(wallet.getBalance().add(amount));
+            walletRepository.save(wallet);
+        } finally {
+            writeLock.unlock();
+        }
     }
 }
