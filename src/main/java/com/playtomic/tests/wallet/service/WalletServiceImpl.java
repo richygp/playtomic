@@ -59,10 +59,11 @@ public class WalletServiceImpl implements IWalletService {
     }
 
     @Override
-    public void topUpWallet(UUID walletId, String creditCardNumber, BigDecimal amount) {
+    public void topUpWallet(UUID walletId, IPaymentPlatformService paymentPlatformService, String creditCardNumber, BigDecimal amount) {
         writeLock.lock();
         try {
             Wallet wallet = getWalletById(walletId);
+            paymentPlatformService.charge(creditCardNumber, amount);
             wallet.setBalance(wallet.getBalance().add(amount));
             walletRepository.save(wallet);
         } finally {

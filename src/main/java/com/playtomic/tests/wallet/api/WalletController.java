@@ -2,6 +2,7 @@ package com.playtomic.tests.wallet.api;
 
 import com.playtomic.tests.wallet.dto.TopUpDTO;
 import com.playtomic.tests.wallet.model.Wallet;
+import com.playtomic.tests.wallet.service.IPaymentPlatformService;
 import com.playtomic.tests.wallet.service.IWalletService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class WalletController {
     private final Logger log = LoggerFactory.getLogger(WalletController.class);
     private final IWalletService walletService;
+    private final IPaymentPlatformService paymentPlatformService;
 
-    public WalletController(IWalletService walletService) {
+    public WalletController(IWalletService walletService, IPaymentPlatformService paymentPlatformService) {
         this.walletService = walletService;
+        this.paymentPlatformService = paymentPlatformService;
     }
 
     @RequestMapping("/")
@@ -56,6 +59,6 @@ public class WalletController {
     @PostMapping("/wallets/{uuid}/balance")
     void topUpWalletBalance(@PathVariable UUID uuid, @RequestBody TopUpDTO topUpDTO) {
         log.info("Returning a specific wallet balance");
-        walletService.topUpWallet(uuid, topUpDTO.creditCardNumber(), topUpDTO.amount());
+        walletService.topUpWallet(uuid, paymentPlatformService, topUpDTO.creditCardNumber(), topUpDTO.amount());
     }
 }

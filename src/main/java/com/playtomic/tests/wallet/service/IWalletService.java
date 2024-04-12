@@ -11,5 +11,5 @@ public interface IWalletService {
     void createEmptyWallet();
     Wallet getWalletById(UUID walletId);
     BigDecimal getWalletBalance(UUID walletId);
-    void topUpWallet(UUID walletId, String creditCardNumber, BigDecimal amount);
+    void topUpWallet(UUID walletId, IPaymentPlatformService paymentPlatformService, String creditCardNumber, BigDecimal amount);
 }
