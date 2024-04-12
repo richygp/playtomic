@@ -60,9 +60,9 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     public void topUpWallet(UUID walletId, String creditCardNumber, BigDecimal amount) {
-        Wallet wallet = getWalletById(walletId);
         writeLock.lock();
         try {
+            Wallet wallet = getWalletById(walletId);
             wallet.setBalance(wallet.getBalance().add(amount));
             walletRepository.save(wallet);
         } finally {
