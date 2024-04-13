@@ -1,6 +1,7 @@
-package com.playtomic.tests.wallet.service;
+package com.playtomic.tests.wallet.service.wallet;
 
 import com.playtomic.tests.wallet.model.Wallet;
+import com.playtomic.tests.wallet.service.IPaymentPlatformService;
 
 import java.math.BigDecimal;
 import java.util.List;

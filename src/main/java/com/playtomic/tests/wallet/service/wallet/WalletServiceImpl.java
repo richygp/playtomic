@@ -1,9 +1,12 @@
-package com.playtomic.tests.wallet.service;
+package com.playtomic.tests.wallet.service.wallet;
 
 import com.playtomic.tests.wallet.exception.NoSuchWalletFound;
 import com.playtomic.tests.wallet.model.Wallet;
 import com.playtomic.tests.wallet.repository.IWalletRepository;
+import com.playtomic.tests.wallet.service.IPaymentPlatformService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +19,7 @@ public class WalletServiceImpl implements IWalletService {
 
     private final IWalletRepository walletRepository;
     private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final Lock readLock = rwLock.readLock();
+
     private final Lock writeLock = rwLock.writeLock();
 
     public WalletServiceImpl(IWalletRepository walletRepository) {
@@ -40,24 +43,15 @@ public class WalletServiceImpl implements IWalletService {
 
     @Override
     public BigDecimal getWalletBalance(UUID walletId) {
-        readLock.lock();
-        try {
-            return getWalletById(walletId).getBalance();
-        } finally {
-            readLock.unlock();
-        }
+        return getWalletById(walletId).getBalance();
     }
 
     @Override
+    @Transactional
     public void topUpWallet(UUID walletId, IPaymentPlatformService paymentPlatformService, String creditCardNumber, BigDecimal amount) {
-        writeLock.lock();
-        try {
-            Wallet wallet = getWalletById(walletId);
-            paymentPlatformService.charge(creditCardNumber, amount);
-            wallet.setBalance(wallet.getBalance().add(amount));
-            walletRepository.save(wallet);
-        } finally {
-            writeLock.unlock();
-        }
+        Wallet wallet = getWalletById(walletId);
+        paymentPlatformService.charge(creditCardNumber, amount);
+        wallet.setBalance(wallet.getBalance().add(amount));
+        walletRepository.save(wallet);
     }
 }
