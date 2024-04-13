@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -30,22 +29,13 @@ public class WalletServiceImpl implements IWalletService {
     }
 
     @Override
-    public void createEmptyWallet() {
-        writeLock.lock();
-        try {
-            walletRepository.save(new Wallet());
-        } finally {
-            writeLock.unlock();
-        }
+    public Wallet createEmptyWallet() {
+        return walletRepository.save(new Wallet());
     }
 
     @Override
     public Wallet getWalletById(UUID walletId) {
-        Optional<Wallet> wallet = walletRepository.findById(walletId);
-        if (wallet.isEmpty()) {
-            throw new NoSuchWalletFound();
-        }
-        return wallet.get();
+        return walletRepository.findById(walletId).orElseThrow(NoSuchWalletFound::new);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface IWalletService {
     List<Wallet> getAllWallets();
-    void createEmptyWallet();
+    Wallet createEmptyWallet();
     Wallet getWalletById(UUID walletId);
     BigDecimal getWalletBalance(UUID walletId);
     void topUpWallet(UUID walletId, IPaymentPlatformService paymentPlatformService, String creditCardNumber, BigDecimal amount);

@@ -18,7 +18,7 @@ import java.net.URI;
  * A real implementation would call to String using their API/SDK.
  * This dummy implementation throws an error when trying to charge less than 10€.
  */
-@Service("paymentPlatformService")
+@Service("stripePaymentPlatformService")
 public class StripeService implements IPaymentPlatformService {
 
     @NonNull
