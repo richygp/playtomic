@@ -44,7 +44,7 @@ class StripeServiceTest {
 
         // When & Then
         Assertions.assertThrowsExactly(
-                StripeAmountTooSmallException.class, 
+                StripeAmountTooSmallException.class,
                 () ->  s.charge("4242 4242 4242 4242", new BigDecimal(5)));
 
     }
