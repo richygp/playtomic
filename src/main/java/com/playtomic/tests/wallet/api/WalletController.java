@@ -48,9 +48,10 @@ public class WalletController {
     }
 
     @PostMapping("/{uuid}/balance/top-up-stripe")
-    void topUpWalletBalanceWithStripe(@PathVariable UUID uuid, @RequestBody TopUpDTO topUpDTO) {
+    ResponseEntity<Object> topUpWalletBalanceWithStripe(@PathVariable UUID uuid, @RequestBody TopUpDTO topUpDTO) {
         log.info("Topping up Wallet id {} using Stripe strategy", uuid);
         walletService.topUpWallet(uuid, stripePaymentPlatformService, topUpDTO.creditCardNumber(), topUpDTO.amount());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{uuid}/balance/top-up-paypal")

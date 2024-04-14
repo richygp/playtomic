@@ -71,6 +71,6 @@ class WalletControllerTest {
                         .getResponse();
 
         // Then
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
     }
 }
