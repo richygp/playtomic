@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 
@@ -39,6 +40,13 @@ public class WalletControllerAdvice {
         log.warn("Failed to perform stripe payment");
         String path = ((ServletWebRequest) request).getRequest().getServletPath();
         return buildResponse(HttpStatus.BAD_REQUEST, "Top up amount should be bigger than 0", path);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleAllNotFoundException(WebRequest request) {
+        log.error("Path Not Found");
+        String path = ((ServletWebRequest) request).getRequest().getServletPath();
+        return buildResponse(HttpStatus.NOT_FOUND, "Path not found", path);
     }
 
     @ExceptionHandler(Exception.class)

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Service("walletService")
@@ -24,11 +23,6 @@ public class WalletServiceImpl implements IWalletService {
     public WalletServiceImpl(IWalletRepository walletRepository, ITopUpPaymentsRepository topUpPaymentsRepository) {
         this.walletRepository = walletRepository;
         this.topUpPaymentsRepository = topUpPaymentsRepository;
-    }
-
-    @Override
-    public List<Wallet> getAllWallets() {
-        return walletRepository.findAll();
     }
 
     @Override

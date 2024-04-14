@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/wallets")
 public class WalletController {
     private final Logger log = LoggerFactory.getLogger(WalletController.class);
     private final IWalletService walletService;
@@ -31,24 +30,7 @@ public class WalletController {
         this.stripePaymentPlatformService = stripePaymentPlatformService;
     }
 
-    @RequestMapping("/")
-    void log() {
-        log.info("Logging from /");
-    }
-
-    @RequestMapping("/wallets")
-    List<Wallet> getAllWallets() {
-        log.info("Returning all wallets");
-        return walletService.getAllWallets();
-    }
-
-    @RequestMapping("/wallets/{uuid}")
-    Wallet getWalletById(@PathVariable UUID uuid) {
-        log.info("Returning a specific wallet by UUID");
-        return walletService.getWalletById(uuid);
-    }
-
-    @PostMapping("/wallets")
+    @PostMapping("/")
     ResponseEntity<Wallet> registerWallet() {
         Wallet wallet = walletService.createEmptyWallet();
         log.info("New empty wallet created with uuid: {}", wallet.getUuid());
@@ -59,19 +41,19 @@ public class WalletController {
                 .build();
     }
 
-    @RequestMapping("/wallets/{uuid}/balance")
+    @RequestMapping("/{uuid}/balance")
     BigDecimal getWalletBalance(@PathVariable UUID uuid) {
         log.info("Returning a specific wallet balance");
         return walletService.getWalletBalance(uuid);
     }
 
-    @PostMapping("/wallets/{uuid}/balance/top-up-stripe")
+    @PostMapping("/{uuid}/balance/top-up-stripe")
     void topUpWalletBalanceWithStripe(@PathVariable UUID uuid, @RequestBody TopUpDTO topUpDTO) {
         log.info("Topping up Wallet id {} using Stripe strategy", uuid);
         walletService.topUpWallet(uuid, stripePaymentPlatformService, topUpDTO.creditCardNumber(), topUpDTO.amount());
     }
 
-    @PostMapping("/wallets/{uuid}/balance/top-up-paypal")
+    @PostMapping("/{uuid}/balance/top-up-paypal")
     ResponseEntity<Object> topUpWalletBalanceWithPaypal(@PathVariable UUID uuid) {
         log.info("Topping up Wallet id {} using Paypal strategy", uuid);
         log.warn("Yet not implemented strategy for Paypal");
