@@ -2,7 +2,7 @@ package com.playtomic.tests.wallet.api;
 
 import com.playtomic.tests.wallet.dto.TopUpDTO;
 import com.playtomic.tests.wallet.model.Wallet;
-import com.playtomic.tests.wallet.service.IPaymentPlatformService;
+import com.playtomic.tests.wallet.service.paymentplatform.IPaymentPlatformService;
 import com.playtomic.tests.wallet.service.wallet.IWalletService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,13 +65,13 @@ public class WalletController {
         return walletService.getWalletBalance(uuid);
     }
 
-    @PostMapping("/wallets/{uuid}/balance/stripe")
+    @PostMapping("/wallets/{uuid}/balance/top-up-stripe")
     void topUpWalletBalanceWithStripe(@PathVariable UUID uuid, @RequestBody TopUpDTO topUpDTO) {
         log.info("Topping up Wallet id {} using Stripe strategy", uuid);
         walletService.topUpWallet(uuid, stripePaymentPlatformService, topUpDTO.creditCardNumber(), topUpDTO.amount());
     }
 
-    @PostMapping("/wallets/{uuid}/balance/paypal")
+    @PostMapping("/wallets/{uuid}/balance/top-up-paypal")
     ResponseEntity<Object> topUpWalletBalanceWithPaypal(@PathVariable UUID uuid) {
         log.info("Topping up Wallet id {} using Paypal strategy", uuid);
         log.warn("Yet not implemented strategy for Paypal");

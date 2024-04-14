@@ -1,8 +1,9 @@
 package com.playtomic.tests.wallet.api;
 
+import com.playtomic.tests.wallet.exception.IllegalTopUpArgument;
 import com.playtomic.tests.wallet.exception.NoSuchWalletFound;
 import com.playtomic.tests.wallet.exception.ResponseException;
-import com.playtomic.tests.wallet.service.StripeAmountTooSmallException;
+import com.playtomic.tests.wallet.service.paymentplatform.StripeAmountTooSmallException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class WalletControllerAdvice {
-
     private final Logger log = LoggerFactory.getLogger(WalletControllerAdvice.class);
 
     @ExceptionHandler(NoSuchWalletFound.class)
@@ -32,6 +32,13 @@ public class WalletControllerAdvice {
         log.warn("Failed to perform stripe payment");
         String path = ((ServletWebRequest) request).getRequest().getServletPath();
         return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Stripe amount too small", path);
+    }
+
+    @ExceptionHandler(IllegalTopUpArgument.class)
+    public ResponseEntity<Object> handleNegativeTopUpException(WebRequest request) {
+        log.warn("Failed to perform stripe payment");
+        String path = ((ServletWebRequest) request).getRequest().getServletPath();
+        return buildResponse(HttpStatus.BAD_REQUEST, "Top up amount should be bigger than 0", path);
     }
 
     @ExceptionHandler(Exception.class)

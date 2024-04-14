@@ -1,7 +1,7 @@
 package com.playtomic.tests.wallet.api;
 
 import com.playtomic.tests.wallet.model.Wallet;
-import com.playtomic.tests.wallet.service.IPaymentPlatformService;
+import com.playtomic.tests.wallet.service.paymentplatform.IPaymentPlatformService;
 import com.playtomic.tests.wallet.service.wallet.IWalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +64,7 @@ class WalletControllerTest {
         // When
         MockHttpServletResponse response =
                 mvc.perform(
-                        post("/api/v1/wallets/7fe42402-01f6-47dc-8eb0-7af26af6182e/balance/stripe")
+                        post("/api/v1/wallets/7fe42402-01f6-47dc-8eb0-7af26af6182e/balance/top-up-stripe")
                                 .content("{\"amount\": \"2.232\", \"creditCardNumber\": \"1111222233334444\"}")
                                 .contentType(MediaType.APPLICATION_JSON))
                         .andReturn()

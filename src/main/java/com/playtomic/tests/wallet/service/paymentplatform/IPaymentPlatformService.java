@@ -1,4 +1,4 @@
-package com.playtomic.tests.wallet.service;
+package com.playtomic.tests.wallet.service.paymentplatform;
 
 import java.math.BigDecimal;
 
